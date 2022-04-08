@@ -1,0 +1,139 @@
+.bgfff {
+    background: #fff;
+}
+.p30 {
+    padding: 30px 30px 0;
+    box-sizing: border-box;
+}
+.pd30 {
+    padding: 30px;
+    box-sizing: border-box;
+}
+.mb20 {
+    margin-bottom: 20px;
+}
+.mr20{margin-right: 20px !important;}
+.ml20{margin-left: 20px !important;}
+.searchForm {
+    padding: 30px 0;
+    box-sizing: border-box;
+}
+.pubTable th{
+    height: 60px !important;
+    box-sizing: border-box !important;
+    padding: 0 !important;
+}
+.pubTable td{
+    height: 58px;
+    box-sizing: border-box;
+}
+.pubTable th{
+    background-color: #C5181F !important;
+    color: #fff;
+    text-align: center;
+}
+
+/* 设置滚动条的样式 */ 
+.modelContent::-webkit-scrollbar {
+    width:4px;
+    height: 4px;
+    background-color: #fff;
+}
+/* 滚动槽 */
+.modelContent::-webkit-scrollbar-track  {
+    border-radius:2px;
+}
+/* 滚动条滑块 */
+.modelContent::-webkit-scrollbar-thumb {
+    background:#C5181F;
+    border-radius: 3px;
+}
+
+.el-table ::-webkit-scrollbar {
+    width: 4px;
+    height: 6px;
+    background-color: #fff;
+}
+.el-table ::-webkit-scrollbar-thumb {
+    height: 6px;
+    background:#C5181F;
+    border-radius: 3px;
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
+}
+.el-table__header .has-gutter th.is-leaf:nth-last-child(2) {
+    border-right: none;
+}
+.el-table table{
+    width: calc(100% - 4px)  !important;
+}
+.el-table__fixed-right,.el-table__fixed{
+    height: calc(100% - 6px) !important;
+}
+
+.colorRed{
+    color: #C5181F !important;
+}
+.colorBlue{
+    color: #3A64B1 !important;
+}
+.el-input.is-disabled .el-input__inner{
+    background-color: #FCFBFB;
+    border-color: #CFCFCF
+}
+.pubTable th.el-table__cell > .cell{
+    padding-left: 14px;
+}
+.pt30{padding-top: 30px;}
+.el-pagination.is-background .btn-prev, .el-pagination.is-background .btn-next, .el-pagination.is-background .el-pager li{
+    background-color: #fff;
+    border-radius: 4px;
+    border: 1px solid #E8E8E8;
+}
+
+.pubTable th .el-checkbox__input.is-checked .el-checkbox__inner{
+    border-color: #fff;
+}
+
+.topButton{
+    padding: 0 0 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.handleBtnBox{
+    display: flex;
+    align-items: center;
+}
+.handleBtnBox .el-button{
+    min-width: 100px;
+    box-sizing: border-box;
+    height: 32px;
+    border-radius: 4px;
+    border: 1px solid #C5181F;
+    padding: 0 15px;
+    text-align: center;
+    color: #C5181F;
+}
+.handleBtnBox .el-button a{
+    color: inherit;
+}
+
+.tableHandle{
+    display: flex;
+    justify-content: space-around;
+}
+.searchForm_wt .el-button,
+.searchForm .el-button{
+    height: 36px;
+    padding: 0;
+    width: 80px;
+    border: 1px solid #C5181F;
+}
+.searchForm_wt .el-button.el-button--default{
+    color: #C5181F;
+}
+.searchForm_wt .el-input__inner,
+.searchForm .el-input__inner {
+    height: 36px;
+}
