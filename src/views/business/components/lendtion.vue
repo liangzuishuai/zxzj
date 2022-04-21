@@ -13,7 +13,7 @@
 					<div class="bus_query">
 						<div class="common_title j_c_a_i">
 							<span></span>
-							出借邀约查询
+							证券出借查询
 						</div>
 						<div class="bus_search">
 							<span>证券代码/名称</span>
@@ -32,7 +32,7 @@
 					<div class="bus_table bus_table3">
 						<div class="common_title j_c_a_i">
 							<span></span>
-							出借邀约列表
+							证券出借列表
 							<div class="in_btnarr">
 								<span class="btn" @click="batchProcess(1,true,multipleSelection)">批量处理</span>
 								<span class="btn" @click="noticeChange">通知模板设置</span>
@@ -86,7 +86,7 @@
 							<el-table-column align="center" prop="FeeRate" min-width="125" sortable="custom" label="出借费率(%)" height>
 								<template slot-scope="scope">
 									<div>
-										{{(tableData122[scope.$index].FeeRate * 100).toFixed(2) }}
+										{{util.Multiply(tableData122[scope.$index].FeeRate,100) || 0}}
 									</div>
 								</template>
 							</el-table-column>
@@ -160,8 +160,8 @@
                         <table id="tableExport" style="display:none;" >
                             <thead><tr><th v-for="(item,index) in showHeadList" :key="index">{{item.FieldName}}</th></tr></thead>
                             <tbody>
-                                <tr v-for="(item,index) in multipleSelection">
-                                    <td v-for="(item2,index2) in showHeadList">
+                                <tr v-for="(item,index) in multipleSelection" :key="index">
+                                    <td v-for="(item2,index2) in showHeadList" :key="index2">
 										<template v-if="item2.ColumnName=='OrderType'">
 											<span v-if="item[item2.ColumnName] == '01AS'">转融券出借非约定申报</span>
 											<span v-if="item[item2.ColumnName] == '01PS'">转融券出借约定申报</span>
@@ -260,7 +260,7 @@
 							<el-table-column align="center" prop="FeeRate" min-width="145" sortable="custom" label="展期费率（%）" height>
 								<template slot-scope="scope">
 									<div>
-										{{(tableData122[scope.$index].FeeRate * 100).toFixed(2) }}
+										{{util.Multiply(tableData122[scope.$index].FeeRate,100) || 0}}
 									</div>
 								</template>
 							</el-table-column>
@@ -295,7 +295,7 @@
 							<el-table-column align="center" prop="OrigFeeRate" min-width="190" sortable="custom" label="原合约出借费率（%）"  height="59">
 								<template slot-scope="scope">
 									<div>
-										{{tableData122[scope.$index].OrigFeeRate * 100 || 0}}
+										{{util.Multiply(tableData122[scope.$index].OrigFeeRate, 100) || 0}}
 									</div>
 								</template>
 							</el-table-column>
@@ -369,8 +369,8 @@
 						<table id="tableExport" style="display:none;" >
                             <thead><tr><th v-for="(item,index) in showHeadList" :key="index">{{item.FieldName}}</th></tr></thead>
                             <tbody>
-                                <tr v-for="(item,index) in multipleSelection">
-                                    <td v-for="(item2,index2) in showHeadList">
+                                <tr v-for="(item,index) in multipleSelection" :key="index">
+                                    <td v-for="(item2,index2) in showHeadList" :key="index2">
 										<template v-if="item2.ColumnName=='OrderType'">
 											<span v-if="item[item2.ColumnName] == '01AS'">转融券出借非约定申报</span>
 											<span v-if="item[item2.ColumnName] == '01PS'">转融券出借约定申报</span>
@@ -469,7 +469,7 @@
 							<el-table-column align="center" prop="FeeRate" min-width="160" sortable="custom" label="提前了结费率(%)" height>
 								<template slot-scope="scope">
 									<div>
-										{{(tableData122[scope.$index].FeeRate * 100).toFixed(2) }}
+										{{ util.Multiply(tableData122[scope.$index].FeeRate, 100) }}
 									</div>
 								</template>
 							</el-table-column>
@@ -491,7 +491,7 @@
 							<el-table-column align="center" prop="OrigFeeRate" min-width="195" sortable="custom" label="原合约出借费率（%）" height="59">
 								<template slot-scope="scope">
 									<div>
-										{{tableData122[scope.$index].OrigFeeRate || 0}}
+										{{util.Multiply(tableData122[scope.$index].OrigFeeRate,100) || 0}}
 									</div>
 								</template>
 							</el-table-column>
@@ -575,8 +575,8 @@
 						<table id="tableExport" style="display:none;" >
                             <thead><tr><th v-for="(item,index) in showHeadList" :key="index">{{item.FieldName}}</th></tr></thead>
                             <tbody>
-                                <tr v-for="(item,index) in multipleSelection">
-                                    <td v-for="(item2,index2) in showHeadList">
+                                <tr v-for="(item,index) in multipleSelection" :key="index">
+                                    <td v-for="(item2,index2) in showHeadList" :key="index2">
 										<template v-if="item2.ColumnName=='OrderType'">
 											<span v-if="item[item2.ColumnName] == '01AS'">转融券出借非约定申报</span>
 											<span v-if="item[item2.ColumnName] == '01PS'">转融券出借约定申报</span>
@@ -806,11 +806,13 @@ import XLSX from 'xlsx'; // 生成导出表格
 import FileSaver from 'file-saver'; // 下载
 import CsvExportor from "csv-exportor"; //csv 导出
 import { checkStr } from '@/utils/index.js';
+import util from "@/utils/util";
 
 export default {
 	name: 'lendtion',
 	data() {
 		return {
+            util: util,
 			PageNum: 1, // 第一页
 			PageSize: 10, // 十条
 			recordNum: 10, // 总条数
@@ -826,15 +828,15 @@ export default {
 			},
 			invitaTwodata: [
 				{
-					title: '转融券出借',
+					title: '证券出借',
 					showNum: 0
 				},
 				{
-					title: '融券出借同意展期',
+					title: '出借同意展期',
 					showNum: 0
 				},
 				{
-					title: '转融券出借提前了结',
+					title: '出借提前了结',
 					showNum: 0
 				},
 				{
@@ -863,15 +865,15 @@ export default {
 			typeOptions: [
 				{
 					value: 0,
-					label: '转融券出借'
+					label: '证券出借'
 				},
 				{
 					value: 1,
-					label: '融券出借同意展期'
+					label: '出借同意展期'
 				},
 				{
 					value: 2,
-					label: '转融券出借提前了结'
+					label: '出借提前了结'
 				}
 			],  // 模板类型
 			tableData122: [], // 出借邀约

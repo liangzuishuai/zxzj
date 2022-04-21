@@ -8,9 +8,9 @@ export default new Vuex.Store({
         token: '' || localStorage.getItem('token'), // token
         userInfo: '' || localStorage.getItem('userInfo'), // 用户信息
         codeData: '' || localStorage.getItem('codeData'), // 缓存证券代码数据
-        fundAccount: ''|| localStorage.getItem('fundAccount'),
-        fundAccountList: ''|| localStorage.getItem('fundAccountList')?localStorage.getItem('fundAccountList').split(";"):'',
-        showcoupon:0||localStorage.getItem('showcoupon'),
+        fundAccount: '' || localStorage.getItem('fundAccount'),
+        fundNames: localStorage.getItem('fundNames') || '', // 证金列表
+        showcoupon: 0 || localStorage.getItem('showcoupon'),
         notLoggeData: '' || localStorage.getItem('notLoggeData'), // 未登录数据
     },
     mutations: {
@@ -31,8 +31,8 @@ export default new Vuex.Store({
             state.fundAccount = fundAccount;
         },
         // 缓存资金账号列表
-        SET_FUNDACCOUNTLIST(state, codeData) {
-            state.fundAccountList = codeData;
+        SET_FUNDNAMES(state, fundNames) {
+            state.fundNames = fundNames;
         },
         // 缓存是否显示
         SHOWCOUPON(state, showcoupon) {
@@ -66,11 +66,11 @@ export default new Vuex.Store({
             commit('SET_CODE_DATA', JSON.stringify(codeData));
         },
         //设置资金账号列表
-        set_FundAccountList({
+        set_fundNames({
             commit
-        }, fundAccountList) {
-            localStorage.setItem('fundAccountList', fundAccountList);
-            commit('SET_FUNDACCOUNTLIST', fundAccountList.split(";"));
+        }, fundNames) {
+            localStorage.setItem('fundNames', fundNames);
+            commit('SET_FUNDNAMES', fundNames);
         },
         // 设置登录用户的资金账号
         set_account({

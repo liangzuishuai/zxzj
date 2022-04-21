@@ -90,7 +90,7 @@
                         {{dictionary.CompactType[scope.row.CompactType]}}
                     </template>
                 </el-table-column>
-                <el-table-column prop="StartDate" align="center" label="约定日期" width="90"></el-table-column>
+                <el-table-column prop="StartDate" align="center" label="开始日期" width="90"></el-table-column>
                 <el-table-column prop="EndDate" align="center" label="到期日期" width="90"></el-table-column>
                 <el-table-column prop="StockCode" align="center" label="证券代码" width="90"></el-table-column>
                 <el-table-column prop="StockName" align="center" label="证券名称" width="90"></el-table-column>
@@ -148,7 +148,7 @@
                         {{dictionary.CompactType[scope.row.CompactType]}}
                     </template>
                 </el-table-column>
-                <el-table-column prop="StartDate" align="center" label="约定日期" width="90"></el-table-column>
+                <el-table-column prop="StartDate" align="center" label="开始日期" width="90"></el-table-column>
                 <el-table-column prop="EndDate" align="center" label="到期日期" width="90"></el-table-column>
                 <el-table-column prop="StockCode" align="center" label="证券代码" width="90"></el-table-column>
                 <el-table-column prop="StockName" align="center" label="证券名称" width="90"></el-table-column>
@@ -433,7 +433,7 @@ export default {
         showDetail(record){
             this.detailData = {
                 合约类型: dictionary.CompactType[record.CompactType],
-                约定日期: record.StartDate || "--",
+                开始日期: record.StartDate || "--",
                 到期日期: record.EndDate || "--",
                 证券代码: record.StockCode || "--",
                 证券名称: record.StockName || "--",

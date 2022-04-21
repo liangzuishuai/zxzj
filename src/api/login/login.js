@@ -84,6 +84,7 @@ export function updateAccountInfo(data) {
 
 // 获取省市
 export function getCityList(data) {
+    data.noNeedToken = true
     return request({
         url: '/v1/account/common/findCityInfo',
         method: 'post',
@@ -91,16 +92,23 @@ export function getCityList(data) {
     })
 }
 
-let baseURL = 'http://123.103.83.56:8000/api';
+let baseURL
+if(process.env.VUE_APP_BASE_API === 'production'){
+    baseURL = 'https://kong.citics.com/api'
+}else {
+    // 内网
+    if(window.location.href.includes('10.23.179.46')){
+        baseURL = 'http://10.23.179.46:8000/api';
+    }else{ // 外网
+        baseURL = 'http://123.103.83.56:8000/api';
+    }
+}
+
+
 // console.log(window.location.href);
 // console.log(window.location.href.includes('10.23.179.46'));
 // console.log(window.location.href.includes('123.103.83.56'));
-// 内网
-if(window.location.href.includes('10.23.179.46')){
-    baseURL = 'http://10.23.179.46:8000/api';
-}else{ // 外网
-    baseURL = 'http://123.103.83.56:8000/api';
-}
+
 //上传文件
 export function fileUpload(url,params) {
     const formData = new FormData();

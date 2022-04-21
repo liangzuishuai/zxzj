@@ -14,8 +14,9 @@ VueRouter.prototype.push = function push(location, onResolve, onReject) {
 Vue.use(VueRouter);
 
 const routes = [
+    {path: '/', redirect: '/index'},
     {
-        path: '/', // 登录页
+        path: '/login', // 登录页
         name: 'home',
         component: () => import('../views/login/login.vue'),
         meta: {
@@ -182,11 +183,20 @@ const routes = [
     },
 ];
 
-const router = new VueRouter({
+const routerConfig = {
     mode: 'history',
-    base: '/pbtrade', // process.env.BASE_URL
+    // base: '/pbtrade', // process.env.BASE_URL
     routes
-})
+}
+
+console.log('VUE_APP_NODE_ENV_CONFIG', process.env)
+if(process.env.VUE_APP_BASE_API === 'test'){
+    // routerConfig.base = '/dist/'
+    routerConfig.base = '/pbtrade/'
+} 
+
+console.log('routerConfig', routerConfig)
+const router = new VueRouter(routerConfig)
 
 // 拦截路由验证
 // console.log($store.state.token);
@@ -196,7 +206,7 @@ router.beforeEach((to, from, next) => {
             next() // 正常跳转
         } else {
             next({
-                path: '/',
+                path: '/login',
                 query: { redirect: to.fullPath }
             }); // 需要验证 未登录 跳转到登录页  并且携带上 想要进入的路由 待登陆之后再跳转
             Message({
@@ -213,7 +223,7 @@ router.beforeEach((to, from, next) => {
     let fullPath = to.fullPath.substring(0, 6);
     // console.log(fullPath);
     // console.log(from.fullPath);
-    if (fullPath == "/" || fullPath.includes('/?')) {
+    if (fullPath == "/login" || fullPath.includes('/login/?')) {
         if ($store.state.token) {
             // 做一个 个人信息请求 来判断 token是否过期 
             getAccountInfo({token:$store.state.token,queryType:'1'}).then(res=>{

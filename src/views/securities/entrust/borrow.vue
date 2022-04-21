@@ -71,7 +71,7 @@
                                     </el-option>
                                 </el-select>
                             </el-form-item>
-                            <el-form-item  label="借入天数" prop="Term"  class="flex_item" key="Term">
+                            <el-form-item  label="借入天数" prop="Term" key="Term">
                                 <el-input v-model="form.Term" autocomplete="off" placeholder="请输入借入天数（天）" @blur="getRate"></el-input>
                                 <p style="color: rgba(0, 0, 0, 0.45)">计息基数为起始日收盘价，合约起始日不允许归还 </p>
                             </el-form-item>
@@ -105,6 +105,12 @@
                                     </div>
                                     <span>竞价费率最小为{{ form.FeeRate }}</span>
                                 </div>
+                            </el-form-item>
+                            <el-form-item  label="可用保证金">
+                                <el-input v-model="balanceAndQuota.enableBailBalance" autocomplete="off" disabled></el-input>
+                            </el-form-item>
+                            <el-form-item  label="可用融券额度">
+                                <el-input v-model="balanceAndQuota.sloEnableQuota" autocomplete="off" disabled></el-input>
                             </el-form-item>
                         </div>
                         <div v-if="checked"  class="message mb20" >提示： 违约金率{{ form.PostRate }} 提前归还费率：{{ form.CustRate + "%" }}/年</div>
@@ -147,6 +153,7 @@ export default {
     },
     data() {
         return {
+            balanceAndQuota: {},
             isFail: false,
             dictionary,
             navList: ["借入委托", "委托查询", "委托导入", "委托定制"],
@@ -230,6 +237,7 @@ export default {
         };
     },
     created() {
+        this.getBalanceAndQuota()
     },
     mounted(){
         
@@ -532,7 +540,15 @@ export default {
             //     isBasket: false
             // }
             this.checked = false
-        }
+        },
+        // 获取可用保证金和可用融券额度
+        getBalanceAndQuota(){
+            securitiesRequest({
+                FundAccount: this.fundAccount
+            }, 130).then((res) => {
+                this.balanceAndQuota = res.data
+            })
+        },
 
     },
 };
@@ -633,6 +649,7 @@ export default {
         border-radius: 5px;
         font-size: 18px;
         color: #FFFFFF;
+        margin: 0 auto;
     }
     .rqfl{
         display: flex;

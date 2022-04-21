@@ -12,12 +12,14 @@
             <div  v-if="$route.name=='extension'||$route.name=='return'" class="modelTitle"><i class="line_l"></i><span>{{title}}</span><i class="line_r"></i></div>
             <div class="accountList">
                 <span>信用账户</span>
-                <el-select v-model="value" style="width:140px" @change="accountChange" size="small">
+                <el-select v-model="value" style="width:260px" @change="accountChange" size="small">
                     <el-option
                     v-for="item in fundAccountList"
-                    :key="item"
-                    :label="item"
-                    :value="item">
+                    :key="item[1]"
+                    :label="item[0] + '   ' + item[1]"
+                    :value="item[1]">
+                        <span style="float: left; color: #8492a6; font-size: 13px">{{ item[0] }}</span>
+                        <span style="float: right">{{ item[1]}}</span>
                     </el-option>
                 </el-select>
             </div>
@@ -33,25 +35,39 @@ export default {
     data () {
         return {
             value:'',
+            fundAccountList: ''
         }
     },
     created(){
         this.value = this.fundAccount
     },
     computed:{
-        ...mapState(['fundAccount','fundAccountList']),
+        ...mapState(['fundAccount','fundNames']),
+    },
+    watch: {
+        fundNames: {
+            handler (newFundNames, oldName) {
+                const fundAccountList = [
+                    // ['GALAXY_INT_AM3', '8009205802']
+                ]
+                
+                newFundNames.split(';').forEach(fundAccount => {
+                    fundAccountList.push(fundAccount.split('|'))
+                });
+
+                this.fundAccountList = fundAccountList
+            },
+            immediate: true
+        }
     },
     methods: {
         ...mapMutations(['SET_ACCOUNT']),
         accountChange(e){
-            console.log(e)
             this.SET_ACCOUNT(e)
-            console.log(typeof e);
             this.value = e;
             this.reload()
         },
         changeNav(index){
-            console.log(index);
             this.$emit('change',index);
         },
         backTo(){

@@ -86,6 +86,12 @@
                                         <span>竞价费率最小为{{ editData.FeeRate }}</span>
                                     </div>
                                 </el-form-item>
+                                <el-form-item  label="可用保证金">
+                                    <el-input v-model="balanceAndQuota.enableBailBalance" autocomplete="off" disabled></el-input>
+                                </el-form-item>
+                                <el-form-item  label="可用融券额度">
+                                    <el-input v-model="balanceAndQuota.sloEnableQuota" autocomplete="off" disabled></el-input>
+                                </el-form-item>
                             </div>
                             <div v-if="checked"  class="message mb20" >提示： 违约金率{{ editData.PostRate }} 提前归还费率：{{ editData.CustRate + "%" }}/年</div>
                             <div v-else  class="message mb20" >提示：违约金率{{ editData.PostRate }} 提前归还费率：{{ editData.PreRate }}/年</div>
@@ -109,6 +115,8 @@ import selfModel from "@/components/selfModel/selfModel.vue";
 import pubNote from "@/components/securities/pubNote.vue";
 import util from "@/utils/util";
 import moment from "moment";
+import { securitiesRequest } from '@/api/securities/securities';
+import { mapState } from 'vuex'
 export default {
     components:{
         selfModel,
@@ -132,6 +140,7 @@ export default {
     },
     data(){
         return {
+            balanceAndQuota: {},
             visible:false,
             checked:false,
             form:{
@@ -162,6 +171,12 @@ export default {
                 },
             },
         }
+    },
+    computed: {
+        ...mapState(['fundAccount'])
+    },
+    created(){
+        this.getBalanceAndQuota()
     },
     methods: {
         formatDecimal(value){
@@ -268,6 +283,14 @@ export default {
             }
             this.editData.CustRate = CustRate;
         },
+        // 获取可用保证金和可用融券额度
+        getBalanceAndQuota(){
+            securitiesRequest({
+                FundAccount: this.fundAccount
+            }, 130).then((res) => {
+                this.balanceAndQuota = res.data
+            })
+        },
     }   
 }
 </script>
@@ -347,12 +370,12 @@ export default {
         color: #FFFFFF;
     }
     .rqfl{
-        display: flex;
-        align-items: center;
+        /* display: flex;
+        align-items: center; */
     }
     .rqfl>span{
         color: #999999;
-        margin-left: 15px;
+        /* margin-left: 15px; */
     }
     .zqBox{
         position: relative;

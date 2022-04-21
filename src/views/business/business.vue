@@ -194,7 +194,7 @@
 					<el-table-column align="center" prop="Scale" sortable="custom" label="需求数量（股）" height></el-table-column>
 					<el-table-column align="center" prop="DemandScale" sortable="custom" label="需求市值（万元）" height>
 						<template slot-scope="scope">
-							<div>{{ (scope.row.DemandScale / 10000).toFixed(2) }}</div>
+							<div>{{ (scope.row.DemandScale / 10000) }}</div>
 						</template>
 					</el-table-column>
 					<el-table-column align="center" prop="TermLimit" width="180" sortable="custom" label="需求期限（天）" height>
@@ -204,7 +204,7 @@
 					</el-table-column>
 					<el-table-column align="center" prop="FeeRate" sortable="custom" label="期望费率（%）" height>
 						<template slot-scope="scope">
-							<div>{{ (scope.row.FeeRate * 100).toFixed(2) }}</div>
+							<div>{{ util.Multiply(scope.row.FeeRate, 100) }}</div>
 						</template>
                     </el-table-column>
 				</el-table>
@@ -332,6 +332,7 @@ import LazySelect from '@/components/LazySelect.vue';
 import { queryService128, queryService120, queryService124, queryService125 } from '@/api/index/index';
 import LendTion from './components/lendtion.vue';
 import LoanInterest from '../../components/LoanInterest.vue';
+import util from "@/utils/util";
 
 export default {
 	name: 'business',
@@ -340,6 +341,7 @@ export default {
 	},
 	data() {
 		return {
+            util: util,
 			PageNum: 1, // 第一页
 			PageSize: 10, // 十条
 			recordNum: 10, // 总条数
@@ -350,7 +352,7 @@ export default {
 				Status: '' // 状态
 			},
 			loading: false,
-			curtitle:'转融券出借',
+			curtitle:'证券出借',
 			body: null, // body元素
 			radio: 1, // 弹框单选
 			FileFormat: 1, // 文件导出格式
@@ -383,7 +385,7 @@ export default {
 					img: img3,
 					imgcur: imgcur3,
 					title: '出借市场行情',
-					text: 'LENDIN GMARKET DATA'
+					text: 'LENDING MARKET DATA'
 				}
 			], // 标题tab数据
 			rules: {
@@ -418,9 +420,9 @@ export default {
 				let newFee = '';
 				this.tableData120[index].FeeRate.split('/').forEach((item,index) => {
 					if(index == 0){
-						newFee+=`${(item*100).toFixed(1)}`;
+						newFee+=`${this.util.Multiply(item,100)}`;
 					}else{
-						newFee+=`/${(item*100).toFixed(1)}`;
+						newFee+=`/${this.util.Multiply(item,100)}`;
 					}
 				});
 				return newFee
@@ -557,7 +559,7 @@ export default {
                 this.queryService120();
 			} else if (this.tabCurindex == 1) {
 				// 出借邀约
-				this.curtitle = '转融券出借';
+				this.curtitle = '证券出借';
 			}
 		},
 		handleSizeChange(val) {

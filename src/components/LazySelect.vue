@@ -110,7 +110,7 @@ export default {
 				// });
 				$axios({
 					method: 'post',
-					url: `http://kong.citics.com/api/v1/Xin/createStock?time=${new Date()}`,
+					url: `https://kong.citics.com/api/v1/Xin/createStock?time=${new Date()}`,
 				}).then(res=>{
 					this.$store.dispatch('set_codeData', res.data.data);
 					this.allCodeData = res.data.data; // 全部数据

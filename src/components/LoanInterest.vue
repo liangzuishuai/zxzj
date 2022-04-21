@@ -423,7 +423,7 @@ export default {
 					// 存入缓存 跳转登录
 					this.$store.dispatch("notLoggeData", JSON.stringify(this.ruleForm)) // 设置未录数据
 						this.$router.push({
-							path: '/',
+							path: '/login',
 						});
 						return
 					}

@@ -185,7 +185,7 @@ export default {
         return {
             isFail: false,
             dictionary,
-            navList: ["个券", "推荐券", "篮子"],
+            navList: ["个券", "热门券", "篮子"],
             current: 0, 
             shichang: {
                 B1: "上海",

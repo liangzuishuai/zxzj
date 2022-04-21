@@ -12,8 +12,8 @@
       <i class="el-icon-check"  @click.stop="check"></i>
     </div>
     <div v-else class="editable-cell-text-wrapper">
-      <span style="display:inline-block;width:100px;">{{ value || "--" }}</span>
-      <i class="el-icon-edit-outline"  @click.stop="edit"></i>
+      <span :style="{display:'inline-block', width: noEdit ? '100%' : '100px'}">{{ value || "--" }}</span>
+      <i class="el-icon-edit-outline"  @click.stop="edit" v-if="!noEdit"></i>
     </div>
   </div>
 </template>
@@ -23,7 +23,8 @@ export default {
     props: {
         text: String,
         dataName:{},
-        record:{}
+        record:{},
+        noEdit: false
     },
     data() {
         return {
@@ -106,6 +107,9 @@ export default {
 .el-icon-checkn:hover,
 .el-icon-edit-outline:hover {
   color: #108ee9;
+}
+.el-icon-edit-outline {
+  margin-top: 2px;
 }
 
 .editable-add-btn {

@@ -54,11 +54,6 @@
                         </template>
                     </el-table-column>
                     <el-table-column prop="Qty" align="center" label="总量" width="120"></el-table-column>
-                    <el-table-column prop="ExchangeType" align="center" label="交易市场">
-                        <template slot-scope="scope">  
-                            {{dictionary.ExchangeType[scope.row.ExchangeType]}}
-                        </template>
-                    </el-table-column>
                     <el-table-column prop="Term" align="center" label="合约期限"></el-table-column>
                     <el-table-column prop="Remark" align="center" label="备注" width="120" :show-overflow-tooltip="true">
                         <template slot-scope="scope">
@@ -68,6 +63,11 @@
                     <el-table-column prop="FareWay" align="center" label="是否折扣">
                         <template slot-scope="scope">  
                             <fareWay :FareWay="scope.row.FareWay" /> 
+                        </template>
+                    </el-table-column>
+                    <el-table-column prop="ExchangeType" align="center" label="交易市场">
+                        <template slot-scope="scope">  
+                            {{dictionary.ExchangeType[scope.row.ExchangeType]}}
                         </template>
                     </el-table-column>
                 </slot>

@@ -1,8 +1,14 @@
-module.exports = {
+const exportsConfig = {
   pwa: {
     themeColor: '#90C6ED'
   },
 
   lintOnSave: false,
-  publicPath: '/pbtrade/'
+  productionSourceMap:false
 }
+
+if(process.env.VUE_APP_BASE_API === 'test'){
+    exportsConfig.publicPath = '/pbtrade/'
+}
+
+module.exports = exportsConfig

@@ -74,7 +74,8 @@
                             v-model="scope.row.BusiCode"
                             style="width: 100px"
                             size="small"
-                            @change="getBusiCode(scope.$index, scope.row)"
+                            @change="getRate(scope.row, scope.$index)"
+                            :disabled="noEdit(scope.row.status)"
                         >
                             <el-option value="110B" label="T+0"></el-option>
                             <el-option value="111B" label="T+1"></el-option>
@@ -97,6 +98,8 @@
                             onkeyup="this.value=this.value.replace(/\D|^0/g,'')"
                             onafterpaste="this.value=this.value.replace(/\D|^0/g,'')"
                             @blur="termLimt(scope.$index, scope.row)"
+                            @change="getRate(scope.row, scope.$index)"
+                            :disabled="noEdit(scope.row.status)"
                         />
                     </template>
                 </el-table-column>
@@ -113,6 +116,7 @@
                             size="small"
                             onkeyup="this.value=this.value.replace(/\D|^0/g,'')"
                             onafterpaste="this.value=this.value.replace(/\D|^0/g,'')"
+                            :disabled="noEdit(scope.row.status)"
                         />
                     </template>
                 </el-table-column>
@@ -120,13 +124,15 @@
                     prop="AppDateType"
                     align="center"
                     label="约定日期类型"
-                    width="140"
+                    width="160px"
                 >
                     <template slot-scope="scope">
                         <el-select
                             v-model="scope.row.AppDateType"
-                            style="width: 120px"
+                            style="width: 160px"
                             size="small"
+                            @change="getRate(scope.row, scope.$index)"
+                            :disabled="noEdit(scope.row.status)"
                         >
                             <el-option :value="1" label="该日（含）前有效"></el-option>
                             <el-option :value="0" label="仅当日有效"></el-option>
@@ -148,6 +154,7 @@
                             size="small"
                             style="width: 120px"
                             placeholder="选择日期"
+                            :disabled="noEdit(scope.row.status)"
                         >
                         </el-date-picker>
                     </template>
@@ -163,7 +170,8 @@
                             v-model="scope.row.BidFlag"
                             style="width: 60px"
                             size="small"
-                            @change="custrateChange(scope.row)"
+                            @change="custrateChange(scope.row, scope.$index)"
+                            :disabled="noEdit(scope.row.status)"
                         >
                             <el-option :value="1" label="是"></el-option>
                             <el-option :value="0" label="否"></el-option>
@@ -184,6 +192,7 @@
                             size="small"
                             @blur="Cruesd(scope.row)"
                             onkeyup="value=value.replace(/^\D*(\d*(?:\.\d{0,2})?).*$/g, '$1')"
+                            :disabled="noEdit(scope.row.status)"
                         />
                         <el-input
                             v-if="scope.row.BidFlag == 0"
@@ -249,7 +258,7 @@
                             >
                             <a
                                 href="javascript:void(0)"
-                                class="colorRed"
+                                :class="scope.row.status === '未提交' ? 'colorRed' : 'colorGrey'"
                                 @click="singleSubmit(scope.row, true)"
                                 >提交</a
                             >
@@ -322,7 +331,7 @@
                     prop="AppDateType"
                     align="center"
                     label="约定日期类型"
-                    width="140"
+                    width="160px"
                 >
                     <template slot-scope="scope">  
                         {{dictionary.AppDateType[scope.row.AppDateType] || '--'}}
@@ -500,6 +509,7 @@ export default {
         }
     },
     methods: {
+        noEdit: importUtil.noEdit,
         rowClassName({row, rowIndex}){
         },
         changeNav(index) {
@@ -525,11 +535,11 @@ export default {
         },
 
         //获取股票融券费率等
-        getBusiCode(index, row) {
-            console.log(row);
-        },
+        // getBusiCode(index, row) {
+        //     console.log(row);
+        // },
         //是否竞价切换
-        custrateChange(row) {
+        custrateChange(row, index) {
             if (row.BidFlag == 1) {
                 if (row.CustRate < row.FeeRate) {
                     row.CustRate = row.FeeRate;
@@ -538,6 +548,7 @@ export default {
             if (row.BidFlag == 0) {
                 //不竞价 需要重新获取融券费率等
                 //调用接口
+                this.getRate(row, index)
             }
         },
         // 竞价光标事件
@@ -820,7 +831,6 @@ export default {
                     this.getRate(item, index);
                 }
             })
-            console.log('data', data)
             return data
         },
         handleSelectionChange(val, index) {
@@ -852,10 +862,11 @@ export default {
             if (!params.ExchangeType) {
                 delete params.ExchangeType;
             }
-            let strArr = data.StockCode.split(".");
+            const StockCode = data.StockCode || '';
+            let strArr = StockCode.split(".");
             if (strArr.length<2) {
                 // params.ExchangeType = "B";
-                params.StockCode = data.StockCode;
+                params.StockCode = StockCode;
                 params.PricingType = 'Basket'
             } else {
                 if (strArr[1] && strArr[1].toLowerCase() === "sz") {
@@ -872,11 +883,15 @@ export default {
             securitiesRequest(params, 115).then((res) => {
                 const d = res.data[0];
                 for (var k in d ){
-                    console.log('this.tableData[index],', this.tableData, index, k, d[k])
                     this.$set(this.tableData[index], k, d[k])
                 }
             }).catch(err => {
-                this.$set(this.tableData[index], 'status', '导入失败（接口返回错误)')
+                const errorMessage = err.errorMessage || err.message
+                if(errorMessage.indexOf('timeout') !=-1 ){
+                    this.$set(this.tableData[index], 'status', '导入失败（接口调用超时)')
+                }else {
+                    this.$set(this.tableData[index], 'status', '导入失败（' + errorMessage + ')')
+                }
             })
         },
         // 批量提交
@@ -894,6 +909,9 @@ export default {
         },
         // 单个提交
         singleSubmit(item, isSingle){
+            if(item.status !== '未提交'){
+                return
+            }
             const params = {
                 RouteID: "W",
                 OpStation: "127.0.0.1",
@@ -951,13 +969,19 @@ export default {
                 }
             }).catch((err) => {
                 //提交失败后提示
-                item.status = '提交失败（接口返回错误）'
+                const errorMessage = err.errorMessage || err.message
+                if(errorMessage.indexOf('timeout') !=-1 ){
+                    item.status = '提交失败（接口调用超时)'
+                }else {
+                    item.status = '提交失败（' + errorMessage + ')'
+                }
+            
                 if(isSingle){
                     this.isFail = true
                     this.successText = '您的委托单提交失败啦！'
                     this.$refs.successModel.showModel()
                 }else {
-                    item.resultMsg = err.errorMessage
+                    item.resultMsg = errorMessage
                     this.failData.push(item)
                 }
                 
@@ -966,7 +990,7 @@ export default {
         //导出文件/模板
         exportData(){
             this.exportLoading = true;
-            if (this.datas.length == 0) {
+            if (this.tableData.length == 0) {
                 this.$message({
                     message: '暂无可导出数据！',
                     type: 'warning'
@@ -989,6 +1013,10 @@ export default {
     display: flex;
     justify-content: center;
     align-items: center;
+}
+.colorGrey {
+    color: #eee;
+    cursor: default;
 }
 /deep/ .submitBox .el-button {
     width: 150px;

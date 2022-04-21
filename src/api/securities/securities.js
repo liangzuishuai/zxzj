@@ -43,7 +43,7 @@ export function postToken(openid) {
                 var fundAccountList = "8009252935;8009215348;8009249736"
                 store.dispatch("set_userToken", res.data.data); // 设置用户token
                 store.dispatch("set_FundAccount", openid); // 设置用户token
-                store.dispatch("set_FundAccountList", fundAccountList); // 设置用户fundAccountList
+                store.dispatch("set_fundNames", fundAccountList); // 设置用户fundAccountList
                 resolve(res.data);
             })
             .catch(err =>{

@@ -122,6 +122,7 @@ export function updateAccountInfo(data) {
 // v2/service/account/prime/bond/noLogin/service
 // 出借行情查询
 export function queryService128no(data) {
+    data.noNeedToken = true
     return request({
         url: '/v2/service/account/prime/bond/noLogin/service',
         method: 'post',
@@ -131,6 +132,7 @@ export function queryService128no(data) {
 
 // 接入行情查询
 export function queryService129no(data) {
+    data.noNeedToken = true
     return request({
         url: '/v2/service/account/prime/bond/noLogin/service',
         method: 'post',

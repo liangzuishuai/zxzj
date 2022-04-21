@@ -91,8 +91,9 @@
                         format="yyyy-MM-dd"
                         value-format="yyyyMMdd"
                         size="small"
-                        style="width: 130px"
+                        style="width: 140px"
                         @change="onCellChange(scope.row, 'zhandate', $event)"
+                        :disabled="noEdit(scope.row.status)"
                         placeholder="选择日期">
                         </el-date-picker>
                     </template>
@@ -104,6 +105,7 @@
                         :record="scope.row"
                         dataName="zhanqi"
                         @change="onCellChange2(scope.row, 'LeftQty1', $event)"
+                        :noEdit="noEdit(scope.row.status)"
                     />
                     </template>
                     
@@ -115,6 +117,7 @@
                         :record="scope.row"
                         dataName="Term"
                         @change="onCellChange3(scope.row, 'Term', $event)"
+                        :noEdit="noEdit(scope.row.status)"
                     />
                     </template>
                 </el-table-column>
@@ -357,6 +360,7 @@ export default {
         }
     },
     methods: {
+        noEdit: importUtil.noEdit,
         handleSelectionChange(val) {
             this.multipleSelection = val;
         },
@@ -599,8 +603,14 @@ export default {
                 item.status = '提交成功'
                 this.successData.push(item)
             }).catch(err => { //请求失败
-                item.resultMsg = err.errorMessage
-                item.status = '提交失败（接口返回错误）'
+                const errorMessage = err.errorMessage || err.message
+                if(errorMessage.indexOf('timeout') !=-1 ){
+                    item.status = '提交失败（接口调用超时)'
+                }else {
+                    item.status = '提交失败（' + errorMessage + ')'
+                }
+                item.resultMsg = errorMessage
+                // item.status = '提交失败（' + err.errorMessage + '）'
                 this.failData.push(item)
             }).finally(() => { // 成功、失败都执行
                 index = index + 1;
@@ -753,12 +763,20 @@ export default {
                     // this.importSuccessData.push(data_[0])
                 }else{
                     // item.errorMessage = '未查到该合同'
-                    item.status = '导入失败（接口返回错误)'
+                    item.status = '导入失败（未查到该合同)'
                     // this.importFailData.push(item)
+                    this.$set(this.tableData, index, item)
                 }
                 
-            }).catch(() => {
-                item.status = '导入失败（接口返回错误)'
+            }).catch((err) => {
+                const errorMessage = err.errorMessage || err.message
+                if(errorMessage.indexOf('timeout') !=-1 ){
+                    item.status = '导入失败（接口调用超时)'
+                }else {
+                    item.status = '导入失败（' + errorMessage + ')'
+                }
+                
+                this.$set(this.tableData, index, item)
             })
         },
         getSingleRate(item, index){
@@ -790,8 +808,14 @@ export default {
                     console.log('item-----------------', item)
                     // this.importSuccessData.push(item)
                 }
-            }).catch(() => {
-                item.status = '导入失败（接口返回错误)'
+            }).catch((err) => {
+                const errorMessage = err.errorMessage || err.message
+                if(errorMessage.indexOf('timeout') !=-1 ){
+                    item.status = '导入失败（接口调用超时)'
+                }else {
+                    item.status = '导入失败（' + errorMessage + ')'
+                }
+                
                 this.$set(this.tableData, index, item)
                 // this.$message.info(err.errorMessage);
             })

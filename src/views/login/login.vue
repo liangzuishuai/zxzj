@@ -23,8 +23,8 @@
                 <div class="home_show" v-show="curIndex == 0">
                     <el-input
                         class="home_number"
-                        placeholder="请输入账号"
-                        maxlength="11"
+                        placeholder="请输入账号/手机号"
+                        maxlength=""
                         @input="inputChange"
                         v-model="userMsg.number"
                         @keyup.enter.native="handleNameChang"
@@ -56,6 +56,8 @@
                             />
                         </i>
                     </el-input>
+                    <!-- 图形验证 -->
+                    <div id="captcha"></div>
                 </div>
                 <!-- 短信登录 -->
                 <div class="home_show" v-show="curIndex == 1">
@@ -161,6 +163,7 @@ export default {
             // 清空密码验证码
             this.userMsg.password = "";
             this.userMsg.vcode = "";
+            this.userMsg.number = "";
             this.isare = false;
         },
         // 账号回车事件
@@ -221,7 +224,7 @@ export default {
             this.$store.dispatch("set_userToken", res.token); // 设置用户token
             if(res.fundAccount){
                 let fundAccountList = res.fundAccount.split(";")
-                this.$store.dispatch("set_FundAccountList", res.fundAccount); // 设置用户fundAccountList
+                this.$store.dispatch("set_fundNames", res.fundNames); // 设置用户fundAccountList
                 this.$store.dispatch("set_account", fundAccountList[0]); // 设置用户权限
             }
             // let privilege = parseInt(res.privilege,2) //转化为10进制
@@ -244,10 +247,20 @@ export default {
         },
         // 用户账号密码登录
         passLogin(){
+            // PBB0000000027
             this.loading = true;
-            passLogin({
-                mobile: this.userMsg.number,
+            let data = {
+                captchaId: "e5179e080c06499d8f1f9373930b42cc",
+                neCaptchaValidate:this.NECaptchaValidate,
                 password: Base64.encode(this.userMsg.password),
+            }
+            if(!this.userMsg.pbAccount){
+                data.mobile = this.userMsg.number;
+            }else{
+                data.pbAccount = this.userMsg.pbAccount;
+            }
+            passLogin({
+                ...data
             }).then(res=>{
                 this.loading = false;
                 this.loginSuccess(res);
@@ -268,9 +281,9 @@ export default {
         },
         // 登录
         login() {
-            // 账号密码登录
+            //  短信验证码登录
             if (this.curIndex == 1) {
-                // 账号密码验证
+                // 短信验证码登录
                 if ( this.userMsg.number.trim() && this.userMsg.vcode.trim() ) {
                     if (!checkStr(this.userMsg.number, "mobile")) {
                         this.$message({
@@ -302,19 +315,65 @@ export default {
                     });
                 }
             }
-            // 短信验证码登录
+            // 账号密码登录
             else {
                 // 账号验证码验证
                 if (this.userMsg.number.trim() && this.userMsg.password.trim()) {
                     if (!checkStr(this.userMsg.number, "mobile")) {
-                        this.$message({
-                            message: "请填写正确的手机号",
-                            type: "warning",
-                        });
-                        return;
+                        // this.$message({
+                        //     message: "请填写正确的手机号",
+                        //     type: "warning",
+                        // });
+                        this.userMsg.pbAccount = this.userMsg.number;
+                       
+                        // 验证码
+                        initNECaptcha(
+                            {
+                                captchaId: "e5179e080c06499d8f1f9373930b42cc",
+                                element: "#captcha",
+                                mode: "popup",
+                                width:'400px',
+                                onVerify: (err, data) => {
+                                    this.NECaptchaValidate = data.validate;
+                                    // 账号密码登录
+                                    this.passLogin();
+                                },
+                            },
+                            (instance) => {
+                                // 初始化成功后得到验证实例instance，可以调用实例的方法
+                                instance.popUp();
+                            },
+                            (err) => {
+                                console.log(err);
+                                // 初始化失败后触发该函数，err对象描述当前错误信息
+                            }
+                        );
                     }else{
+                        this.userMsg.pbAccount = '';
+                        // 验证码
+                        initNECaptcha(
+                            {
+                                captchaId: "e5179e080c06499d8f1f9373930b42cc",
+                                element: "#captcha",
+                                mode: "popup",
+                                width:'400px',
+                                onVerify: (err, data) => {
+                                    this.NECaptchaValidate = data.validate;
+                                    // 账号密码登录
+                                    this.passLogin();
+                                },
+                            },
+                            (instance) => {
+                                // 初始化成功后得到验证实例instance，可以调用实例的方法
+                                instance.popUp();
+                            },
+                            (err) => {
+                                console.log(err);
+                                // 初始化失败后触发该函数，err对象描述当前错误信息
+                            }
+                        );
                         // 账号密码登录
-                        this.passLogin();
+                        // this.passLogin();
                     }
                 } else {
                     let message;

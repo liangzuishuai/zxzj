@@ -55,6 +55,7 @@
                         :record="scope.row"
                         dataName="guihuan"
                         @change="onCellChange(scope.row, 'LeftQty1', $event)"
+                        :noEdit="noEdit(scope.row.status)"
                     />
                     </template>
                     
@@ -287,6 +288,7 @@ export default {
         
     },
     methods: {
+        noEdit: importUtil.noEdit,
         handleSelectionChange(val) {
             this.multipleSelection = val;
         },
@@ -369,8 +371,14 @@ export default {
                 item.status = '提交成功'
                 this.successData.push(item)
             }).catch(err => { //请求失败
-                item.resultMsg = err.errorMessage
-                item.status = '提交失败（接口返回错误）'
+                const errorMessage = err.errorMessage || err.message
+                if(errorMessage.indexOf('timeout') !=-1 ){
+                    item.status = '提交失败（接口调用超时)'
+                }else {
+                    item.status = '提交失败（' + errorMessage + ')'
+                }
+                item.resultMsg = errorMessage
+                // item.status = '提交失败（' + errorMessage + '）'
                 this.failData.push(item)
             }).finally(() => { // 成功、失败都执行
                 index = index + 1;
@@ -597,15 +605,20 @@ export default {
                     // this.importSuccessData.push( data_[0])
                 }else{
                     // item.errorMessage = '未查到该合同'
-                    item.status = '导入失败（接口返回错误)'
+                    item.status = '导入失败（未查到该合同）'
                     this.$set(this.tableData, index, item)
                     // this.importFailData.push(item)
                 }
                 
             }).catch(err => {
-                // item.errorMessage = '未查到该合同'
-                item.status = '导入失败（接口返回错误)'
+                const errorMessage = err.errorMessage || err.message
+                if(errorMessage.indexOf('timeout') !=-1 ){
+                    item.status = '导入失败（接口调用超时)'
+                }else {
+                    item.status = '导入失败（' + errorMessage + ')'
+                }
                 this.importFailData.push(item)
+                
             })
         },
         // 删除提交成功的数据

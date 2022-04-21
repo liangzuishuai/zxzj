@@ -32,26 +32,26 @@
                                         <el-option value="1" label="可撤"></el-option>
                                     </el-select>
                                 </el-form-item>
-                                <el-form-item label="约定日期起">
+                                <el-form-item label="交易日期起">
                                     <el-date-picker
                                         v-model="form.TrdDate_Begin"
                                         type="date"
                                         format="yyyy-MM-dd"
                                         size="small"
                                         style="width: 180px"
-                                        placeholder="选择约定日期起"
+                                        placeholder="选择交易日期起"
                                         :picker-options="startPickerOptions">
                                         
                                     </el-date-picker>
                                 </el-form-item>
-                                <el-form-item label="约定日期止">
+                                <el-form-item label="交易日期止">
                                     <el-date-picker
                                         v-model="form.TrdDate_End"
                                         type="date"
                                         format="yyyy-MM-dd"
                                         size="small"
                                         style="width: 180px"
-                                        placeholder="选择约定日期止"
+                                        placeholder="选择交易日期止"
                                         :picker-options="endPickerOptions">
                                         
                                     </el-date-picker>

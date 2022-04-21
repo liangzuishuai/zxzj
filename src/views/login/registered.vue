@@ -84,7 +84,7 @@ export default {
 				});
 				setTimeout(() => {
 					this.$router.push({
-						path: '/',
+						path: '/login',
 						query: {
 							index:0
         				}

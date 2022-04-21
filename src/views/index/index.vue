@@ -47,13 +47,15 @@
 					<p>证券出借业务</p>
 					<p>Securities Lending</p>
 				</div>
-				<div @click="swiperIndexChange(1)" v-if="token && fundAccount ? showcoupon == 1 ? true : false : false" :class="[swiperIndex == 1 ? 'index_curr' : '','index_right','f_d_a_i','index_red']">
+                <!-- v-if="token && fundAccount ? showcoupon == 1 ? true : false : false" -->
+				<div @click="swiperIndexChange(1)"  :class="[swiperIndex == 1 ? 'index_curr' : '','index_right','f_d_a_i','index_red']">
 					<p>约定融券服务</p>
 					<p>Securities Borrowing</p>
 				</div>
 			</div>
 			<!-- 融券 -->
-			<div v-else-if="swiperIndex == 1 && token && fundAccount ? showcoupon == 1 ? true : false : false" class="index_header f_d_a_i">
+            <!-- v-else-if="swiperIndex == 1 && token && fundAccount ? showcoupon == 1 ? true : false : false" -->
+			<div v-else-if="swiperIndex == 1" class="index_header f_d_a_i">
 				<div class="index_banner"><img src="@/assets/index_img11.png" alt /></div>
 				<div class="index_content f_d_a_i" style="top:200px">
 					<p class="title_1">约定融券服务</p>
@@ -92,11 +94,11 @@
 				</div>
 				<div @click="swiperIndexChange(0)" :class="[swiperIndex == 0 ? 'index_curr' : '','index_right','f_d_a_i','index_white']">
 					<p>证券出借业务</p>
-					<p>security lending</p>
+					<p>Securities Lending</p>
 				</div>
 				<div @click="swiperIndexChange(1)" :class="[swiperIndex == 1 ? 'index_curr' : '','index_right','f_d_a_i','index_red']">
 					<p>约定融券服务</p>
-					<p>Agreed securities lending</p>
+					<p>Securities Borrowing</p>
 				</div>
 			</div>
 		</div>
@@ -305,7 +307,7 @@
 					<el-table-column align="center" prop="TermLimit" label="需求期限（天）" width="85" height></el-table-column>
 					<el-table-column align="center" prop="FeeRate" label="出借费率" height>
 						<template slot-scope="scope">
-							<div>{{ (scope.row.FeeRate * 100).toFixed(2) }}%</div>
+							<div>{{ util.Multiply(scope.row.FeeRate,100) }}%</div>
 						</template>
 					</el-table-column>
 				</el-table>
@@ -444,7 +446,7 @@
 						<el-table-column align="center" prop="Term" label="期限（天）" width="90" height></el-table-column>
 						<el-table-column align="center" prop="FeeRate" label="费率" width="65" height>
 							<template slot-scope="scope">
-								<div>{{ scope.row.FeeRate * 100 }}%</div>
+								<div>{{ (scope.row.FeeRate * 100).toFixed(0) }}%</div>
 							</template>
 						</el-table-column>
 						<el-table-column show-overflow-tooltip align="center" prop="Remark" label="备注" min-width="50" height></el-table-column>
@@ -502,11 +504,13 @@ import SIdeNavigation from '@/components/SIdeNavigation.vue';
 import { queryService128no, queryService129no } from '@/api/index/index';
 import LoanInterest from '../../components/LoanInterest.vue';
 import { mapState } from "vuex"
+import util from "@/utils/util";
 
 export default {
 	name: 'index',
 	data() {
 		return {
+			util:util, // 处理费率
 			target_id: '',
 			loading:false,
 			target_options: [],
@@ -640,9 +644,9 @@ export default {
 		},
 		// 轮流展示banner
 		swiperIndexshow(){
-			if(!(this.token && this.fundAccount ? this.showcoupon == 1 ? true : false : false)){
-				return;
-			};
+			// if(!(this.token && this.fundAccount ? this.showcoupon == 1 ? true : false : false)){
+			// 	return;
+			// };
 			this.timer = setInterval(() => {
 				if(this.swiperIndex == 0){
 					this.swiperIndex = 1;

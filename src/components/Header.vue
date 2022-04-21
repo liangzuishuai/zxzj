@@ -20,7 +20,7 @@
                     </template>
                 </ul>
                 <!-- 未登录 -->
-                <router-link v-if="!token" to="/" :class="[isLogin ? 'header_login_cur' : '' ,'header_login']"
+                <router-link v-if="!token" to="/login" :class="[isLogin ? 'header_login_cur' : '' ,'header_login']"
                     >登录</router-link
                 >
                 <!-- 已登录  -->
@@ -147,7 +147,7 @@ export default {
                 this.$router.push("/index");
             } else {
                 // 未登录转登录
-                this.$router.push("/");
+                this.$router.push("/login");
             }
         },
         // 退出登录
@@ -160,7 +160,7 @@ export default {
                 // 清理用户信息和token并跳转到登录页
                 this.$store.dispatch("set_userToken", ""); // 清理token
                 this.$store.dispatch("set_userInfo", ""); // 清理用户信息
-                this.$store.dispatch("set_FundAccountList", ""); // 资金账号列表
+                this.$store.dispatch("set_fundNames", ""); // 资金账号列表
                 this.$store.dispatch("set_account", ""); // 资金账号列表
                 this.$store.dispatch("showcoupon", ""); // 融券权限
                 this.$store.dispatch('set_codeData', ""); // 股票代码 
@@ -168,7 +168,7 @@ export default {
                 //     type: "success",
                 //     message: "退出成功",
                 // });
-                this.$router.push("/");
+                this.$router.push("/login");
             }).catch(() => {});
         },
     },

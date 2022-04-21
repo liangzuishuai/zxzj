@@ -2,6 +2,7 @@ import axios from 'axios'
 import { MessageBox, Message } from 'element-ui'
 import store from '@/store'
 import Qs from 'qs';
+// import { delete } from 'vue/types/umd';
 
 // 创建axios实例
 // .env.dev 开发环境
@@ -9,15 +10,22 @@ import Qs from 'qs';
 // .env.test 测试环境
 // console.log('process.env.VUE_APP_BASE_API',process.env.VUE_APP_BASE_API);
 // 获取当前地址判断设置请求地址
-let baseURL = 'http://10.23.179.46:8000/api';
+// let baseURL = 'http://10.23.179.46:8000/api';
 // console.log(window.location.href);
 // console.log(window.location.href.includes('10.23.179.46'));
 // console.log(window.location.href.includes('123.103.83.56'));
-// 内网
-if(window.location.href.includes('10.23.179.46')){
-    baseURL = 'http://10.23.179.46:8000/api';
-}else{ // 外网
-    baseURL = 'http://123.103.83.56:8000/api';
+
+console.log('request', process.env)
+let baseURL
+if(process.env.VUE_APP_BASE_API === 'production'){
+    baseURL = 'https://kong.citics.com/api'
+}else {
+    // 内网
+    if(window.location.href.includes('10.23.179.46')){
+        baseURL = 'http://10.23.179.46:8000/api';
+    }else{ // 外网
+        baseURL = 'http://123.103.83.56:8000/api';
+    }
 }
 const service = axios.create({
     baseURL: baseURL, // url = base url + request url  process.env.VUE_APP_BASE_API
@@ -25,12 +33,18 @@ const service = axios.create({
     timeout: 5000, // request timeout
     headers: {"Content-Type":"application/x-www-form-urlencoded;charset=UTF-8"},
     transformRequest: [function (data) {
+        
         // 对 data 进行任意转换处理
         let newData = {
             sysNo: 'CSE038',
-            ...data,
-            token: store.state.token, // token
+            ...data
         };
+
+        if(!newData.noNeedToken){
+            newData.token = store.state.token
+        }else {
+            delete newData.noNeedToken
+        }
         data = newData;
         return Qs.stringify(data);
     }], // 设置固定参数
@@ -86,11 +100,11 @@ service.interceptors.response.use(
                 // 删除 token 刷新页面 路由会判断没有 token 而跳转到登录页
                 store.dispatch('set_userInfo','');
                 store.dispatch('set_account','');
-                store.dispatch('set_FundAccountList','');
+                store.dispatch('set_fundNames','');
                 store.dispatch('showcoupon','');
                 store.dispatch('set_userToken', '').then(() => {
                     window.location.reload();
-                    this.$route.path('/')
+                    this.$route.path('/login')
                 })
                 return Promise.reject(new Error(res.errorMessage || res.errorMsg || 'Error')); // 过期错误
             }

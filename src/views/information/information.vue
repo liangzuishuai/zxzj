@@ -158,7 +158,7 @@
                             <i slot="prefix"><img class="home_icon" src="@/assets/passdicon.png" alt /></i>
                         </el-input>
                     </div>
-                    <div class="pass_item">
+                    <div class="pass_item" v-if="passwordFlag == 0">
                         <span>验证码</span>
                         <el-input class="pass_input" ref="vcode" v-model="userPass.vCode" maxlength="6" placeholder="请输入验证码">
                             <i slot="prefix"><img class="home_icon" src="@/assets/ingyzm.png" alt /></i>
@@ -405,7 +405,7 @@ export default {
 			modifyPassword({
 				oldPassword:Base64.encode(data.oldPassword), // 旧密码
 				password:Base64.encode(data.password), // 密码 新密码
-				validCode:data.vCode, // 验证码
+				// validCode:data.vCode, // 验证码
 			}).then(res=>{
 				// this.$message({
 				// 	message: '修改成功',
@@ -611,16 +611,16 @@ export default {
 				}
 			} else {
 				// 修改密码
-				if (this.userPass.mobile && this.userPass.password && this.userPass.oldPassword && this.userPass.vCode && this.userPass.confirPassword) {
+				if (this.userPass.mobile && this.userPass.password && this.userPass.oldPassword && this.userPass.confirPassword) {
 					if (this.passwordLength(this.userPass.password)) {
 						if (this.passwordIsEqual(this.userPass.password, this.userPass.confirPassword)) {
-							if(!this.isSendCode){
-								this.$message({
-									message:"请发送验证码",
-									type: "warning",
-								});
-								return;
-							};
+							// if(!this.isSendCode){
+							// 	this.$message({
+							// 		message:"请发送验证码",
+							// 		type: "warning",
+							// 	});
+							// 	return;
+							// };
 							this.modifyPassword(this.userPass);
 						} else {
 							this.$message({
