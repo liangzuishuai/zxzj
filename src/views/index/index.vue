@@ -205,7 +205,7 @@
 							</p>
 							<p class="box_p2">
 								展期与提前了结：
-								<span>可展期（同原期限），不可提前了结</span>
+								<span>不可展期，不可提前了结</span>
 							</p>
 						</div>
 					</div>
@@ -226,7 +226,7 @@
 							</p>
 							<p class="box_p2">
 								展期与提前了结：
-								<span>可展期（同原期限），可提前了结</span>
+								<span>可展期（灵活期限），可提前了结</span>
 							</p>
 						</div>
 						<div class="index_line1"></div>
@@ -264,7 +264,7 @@
 							</p>
 							<p class="box_p2">
 								展期与提前了结：
-								<span>可展期（同原期限），可提前了结</span>
+								<span>不可展期，不可提前了结</span>
 							</p>
 						</div>
 					</div>

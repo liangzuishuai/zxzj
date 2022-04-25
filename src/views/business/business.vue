@@ -204,7 +204,7 @@
 					</el-table-column>
 					<el-table-column align="center" prop="FeeRate" sortable="custom" label="期望费率（%）" height>
 						<template slot-scope="scope">
-							<div>{{ util.Multiply(scope.row.FeeRate, 100) }}</div>
+							<div>{{ util.Multiply(scope.row.FeeRate, 100) }}%</div>
 						</template>
                     </el-table-column>
 				</el-table>
